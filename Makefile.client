@@ -1,0 +1,23 @@
+CC			= g++
+CFLAGS		= -g -c -Wall
+LDFLAGS		=
+INCLUDES	= -I.
+SOURCEDIR	= .
+BUILDDIR	= build
+EXECUTABLE	= client
+SOURCES 	= $(SOURCEDIR)/client.cpp $(SOURCEDIR)/stream.cpp $(SOURCEDIR)/clientsocket.cpp
+OBJECTS 	= $(patsubst $(SOURCEDIR)/%.cpp,$(BUILDDIR)/%.o,$(SOURCES))
+
+all: dir $(BUILDDIR)/$(EXECUTABLE)
+
+dir:
+	mkdir -p $(BUILDDIR)
+
+$(BUILDDIR)/$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+
+$(OBJECTS): $(BUILDDIR)/%.o : $(SOURCEDIR)/%.cpp
+	$(CC) $(CFLAGS) $(INCLUDES) $< -o $@
+
+clean:
+	rm -f $(BUILDDIR)/*o $(BUILDDIR)/$(EXECUTABLE)
