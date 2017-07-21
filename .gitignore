@@ -1,2 +1,5 @@
 # Ignore build directory
 build
+
+#Xcode project directory
+*.xcodeproj
