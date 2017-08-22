@@ -1,5 +1,5 @@
 CC			= g++
-CFLAGS		= -g -c -Wall
+CFLAGS		= -std=c++11 -g -c -Wall
 LDFLAGS		=
 INCLUDES	= -I.
 SOURCEDIR	= .
