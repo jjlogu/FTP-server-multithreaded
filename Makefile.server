@@ -5,7 +5,7 @@ INCLUDES	= -I.
 SOURCEDIR	= .
 BUILDDIR	= build
 EXECUTABLE	= server
-SOURCES 	= $(SOURCEDIR)/server.cpp $(SOURCEDIR)/stream.cpp $(SOURCEDIR)/serversocket.cpp
+SOURCES 	= $(SOURCEDIR)/server.cpp $(SOURCEDIR)/stream.cpp $(SOURCEDIR)/serversocket.cpp $(SOURCEDIR)/ftp.cpp
 OBJECTS 	= $(patsubst $(SOURCEDIR)/%.cpp,$(BUILDDIR)/%.o,$(SOURCES))
 
 all: dir $(BUILDDIR)/$(EXECUTABLE)
