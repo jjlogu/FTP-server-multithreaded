@@ -19,7 +19,7 @@
 #include <arpa/inet.h>
 #include "serversocket.h"
 
-ServerSocket::ServerSocket(int port, const char* address) 
+ServerSocket::ServerSocket(int port, const char* address)
     : lsd(0), port(port), ip_address(address), listening(false) {} 
 
 ServerSocket::~ServerSocket()
@@ -66,7 +66,7 @@ int ServerSocket::start()
     return result;
 }
 
-Stream* ServerSocket::accept() 
+Stream* ServerSocket::accept()
 {
     if (listening == false) {
         return NULL;

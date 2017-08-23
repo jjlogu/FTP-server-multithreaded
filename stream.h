@@ -19,8 +19,10 @@
 
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <errno.h>
 #include <unistd.h>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -41,7 +43,9 @@ class Stream {
     ~Stream();
 
     ssize_t send(const char* buffer, size_t len);
+    void send(const string& str);
     ssize_t receive(char* buffer, size_t len);
+    void receive(string* rcv);
 
     string getPeerIP();
     int    getPeerPort();
