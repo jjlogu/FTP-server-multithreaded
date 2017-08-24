@@ -14,8 +14,7 @@
    limitations under the License.
 */
 
-#include <cstdio>
-#include <cstdlib>
+#include <iostream>
 #include <utility>
 #include "serversocket.h"
 #include "ftp.h"
@@ -23,38 +22,28 @@
 using namespace std;
 
 void ftp_handler(Stream* tcp_stream) {
-  //ssize_t len;
-  //char line[256];
-  string str;
-  /* while ((len = tcp_stream->receive(line, sizeof(line))) > 0) {
-    line[len] = 0;
-    printf("received - %s\n", line);
-    tcp_stream->send(line, len);
-  } */
-  pair<string, string> request;
+  pair<string, string> command;
   FTPHandle ftp_handle(tcp_stream);
-  ftp_handle.stream->send(FTPResponse::greeting);
+  cout<<"Number of active threads : "<<FTPHandle::get_active_handles_count()<<endl;
+  ftp_handle.send_greeting();
   for(;;) {
-    str.clear();
-    ftp_handle.stream->receive(&str);
-    request = ftp_handle.command_parser(str.c_str());
-    printf("%s %s\n", request.first.c_str(), request.second.c_str());
-    if("USER" == request.first)
-      ftp_handle.stream->send(FTPResponse::allow_user + " " + request.second + "\012");
-    else if("SYST" == request.first)
-      ftp_handle.stream->send(FTPResponse::system_str);
-    else if("QUIT" == request.first)
+    command = ftp_handle.read_command();
+    //printf("%s %s\n", command.first.c_str(), command.second.c_str());
+    if("USER" == command.first)
+      ftp_handle.allow_user(command.second); // by default allow all user
+    else if("SYST" == command.first)
+      ftp_handle.send_syst();
+    else if("QUIT" == command.first)
       break;
     else
-      ftp_handle.stream->send(FTPResponse::bad_command);
+      ftp_handle.send_bad_command();
   }
-  delete tcp_stream;
 }
 
 int main(int argc, char** argv)
 {
   if (argc < 2 || argc > 4) {
-    printf("usage: server <port> [<ip>]\n");
+    cout<<"usage: server <port> [<ip>]\n";
     exit(1);
   }
 

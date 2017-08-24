@@ -19,6 +19,8 @@
 
 #include <utility>
 #include <string>
+#include <regex>
+#include <pthread.h>
 #include "stream.h"
 using namespace std;
 
@@ -32,10 +34,22 @@ class FTPResponse {
 };
 
 class FTPHandle {
+  private:
+    Stream* cstream; // control stream
+    static size_t active_handles_count; //thread count
+    static pthread_mutex_t mutex;
+    FTPHandle();
   public:
     FTPHandle(Stream* stream);
-    Stream* stream;
+    ~FTPHandle();
+    Stream* get_cstream();
     pair<string, string> command_parser(const char* request);
+    pair<string, string> read_command();
+    static size_t get_active_handles_count();
+    void send_greeting();
+    void send_syst();
+    void allow_user(const string username);
+    void send_bad_command();
 };
 
 #endif
