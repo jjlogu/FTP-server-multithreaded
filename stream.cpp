@@ -15,7 +15,6 @@
 */
 
 #include <arpa/inet.h>
-#include <cstdio>
 #include "stream.h"
 
 Stream::Stream(int sd, struct sockaddr_in* address) : sd(sd) {
@@ -74,11 +73,17 @@ void Stream::receive(string* rcv) {
       bytesReceived = read(sd, buffer.data(), buffer.size());
       // append string from buffer.
       if ( bytesReceived == -1 ) { 
-        printf("Error while read as string\n");
+        perror("Error while read as string\n");
       } else {
         rcv->append( buffer.cbegin(), buffer.cend() );
       }
   } while ( bytesReceived == MAX_BUF_LENGTH );
+}
+
+string Stream::receive() {
+  string rcv;
+  receive(&rcv);
+  return rcv;
 }
 
 string Stream::getPeerIP() {

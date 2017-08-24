@@ -46,6 +46,7 @@ class Stream {
     void send(const string& str);
     ssize_t receive(char* buffer, size_t len);
     void receive(string* rcv);
+    string receive();
 
     string getPeerIP();
     int    getPeerPort();
