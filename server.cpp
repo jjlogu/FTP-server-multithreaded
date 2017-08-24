@@ -21,23 +21,27 @@
 
 using namespace std;
 
-void ftp_handler(Stream* tcp_stream) {
+void* ftp_handler(void* arg) {
+  FTPHandle* ftp_handle =(FTPHandle*)arg;
   pair<string, string> command;
-  FTPHandle ftp_handle(tcp_stream);
+  cout<<"Connected: "<<ftp_handle->get_cstream()->getPeerIP()<<endl;
   cout<<"Number of active threads : "<<FTPHandle::get_active_handles_count()<<endl;
-  ftp_handle.send_greeting();
+  ftp_handle->send_greeting();
   for(;;) {
-    command = ftp_handle.read_command();
+    command = ftp_handle->read_command();
     //printf("%s %s\n", command.first.c_str(), command.second.c_str());
     if("USER" == command.first)
-      ftp_handle.allow_user(command.second); // by default allow all user
+      ftp_handle->allow_user(command.second); // by default allow all user
     else if("SYST" == command.first)
-      ftp_handle.send_syst();
+      ftp_handle->send_syst();
     else if("QUIT" == command.first)
       break;
     else
-      ftp_handle.send_bad_command();
+      ftp_handle->send_bad_command();
   }
+  cout<<"Disconnecting: "<<ftp_handle->get_cstream()->getPeerIP()<<endl;
+  delete ftp_handle;
+  return NULL;
 }
 
 int main(int argc, char** argv)
@@ -59,7 +63,11 @@ int main(int argc, char** argv)
     while (1) {
       tcp_stream = server->accept();
       if (tcp_stream != NULL) {
-        ftp_handler(tcp_stream);
+        pthread_t pid;
+        if(pthread_create(&pid, NULL, &ftp_handler, (void*)new FTPHandle(tcp_stream))  != 0) {
+          perror("Error creating thread\n");
+          delete tcp_stream;
+        }
       }
     }
   }

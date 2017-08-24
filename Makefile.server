@@ -1,6 +1,6 @@
 CC			= g++
 CFLAGS		= -std=c++11 -g -c -Wall
-LDFLAGS		=
+LDFLAGS		= -pthread
 INCLUDES	= -I.
 SOURCEDIR	= .
 BUILDDIR	= build
